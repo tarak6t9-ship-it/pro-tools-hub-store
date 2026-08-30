@@ -4,6 +4,16 @@
 <meta charset="UTF-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Pro Tools Hub</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23187a5a'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='34' font-weight='800' fill='white' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E"/>
+<meta name="description" content="Discover premium digital products, software, templates and useful resources — delivered instantly."/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Pro Tools Hub — Premium Digital Marketplace"/>
+<meta property="og:description" content="Discover premium digital products, software, templates and useful resources — delivered instantly."/>
+<meta property="og:image" content="og-image.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Pro Tools Hub — Premium Digital Marketplace"/>
+<meta name="twitter:description" content="Discover premium digital products, software, templates and useful resources."/>
+<meta name="twitter:image" content="og-image.png"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
 <style>
@@ -18,8 +28,17 @@ header{height:76px;background:rgba(255,255,255,.94);border-bottom:1px solid var(
 nav{margin-left:auto;display:none;gap:6px;align-items:center}nav a,nav .navbtn{padding:11px 14px;border-radius:12px;color:#536171;font-weight:700;background:none;border:0;cursor:pointer;font-size:15px}nav a:hover,nav .navbtn:hover{background:#eef8f4;color:var(--g)}
 nav.open{display:flex;position:absolute;top:76px;left:0;right:0;background:#fff;flex-direction:column;padding:14px;border-bottom:1px solid var(--line);box-shadow:0 12px 24px #10251c14;align-items:stretch}
 #userEmail{font-weight:800;color:var(--g);padding:11px 14px;font-size:13px}
-.hero{padding:80px 20px;text-align:center;background:radial-gradient(circle at 20% 10%,#dff4eb,transparent 30%),linear-gradient(180deg,#eef9f5,#fff)}
-.hero h1{font:800 clamp(36px,7vw,68px)/1.05 'Plus Jakarta Sans';letter-spacing:-3px;margin:0}.hero h1 span{color:var(--g)}.hero p{max-width:680px;margin:23px auto;color:var(--muted);font-size:18px;line-height:1.7}
+.hero{position:relative;overflow:hidden;padding:90px 20px 60px;text-align:center;background:linear-gradient(135deg,#0e2b21,#154536 55%,#0e2b21);color:#fff}
+.hero .blob{position:absolute;border-radius:50%;filter:blur(85px);opacity:.55;pointer-events:none;z-index:0}
+.hero .blob1{width:420px;height:420px;top:-160px;right:-100px;background:#23956f}
+.hero .blob2{width:340px;height:340px;bottom:-180px;left:-100px;background:#187a5a}
+.hero .wrap{position:relative;z-index:1}
+.hero .tag{background:rgba(255,255,255,.12);backdrop-filter:blur(8px);color:#bdf0da;border:1px solid rgba(255,255,255,.22)}
+.hero h1{font:800 clamp(36px,7vw,68px)/1.05 'Plus Jakarta Sans';letter-spacing:-3px;margin:0;color:#fff}.hero h1 span{color:#6fe3b4}.hero p{max-width:680px;margin:23px auto;color:#cfe6db;font-size:18px;line-height:1.7}
+.statsbar{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:44px}
+.statcard{background:rgba(255,255,255,.08);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:20px 30px;min-width:140px}
+.statcard b{display:block;font:800 32px 'Plus Jakarta Sans';color:#fff}
+.statcard span{font-size:13px;color:#cfe6db}
 .btn{display:inline-flex;align-items:center;justify-content:center;padding:14px 22px;border-radius:13px;background:var(--g);color:#fff;font-weight:800;border:0;cursor:pointer;font-size:15px}
 .btn.outline{background:#fff;color:var(--g);border:1px solid var(--line)}
 .section{padding:56px 0}.section h2{font:800 34px 'Plus Jakarta Sans';letter-spacing:-1.5px}.tag{display:inline-block;padding:8px 13px;border-radius:99px;background:#eaf7f2;color:var(--g);font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase}
@@ -90,6 +109,14 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
 @media(max-width:700px){.pdgrid{grid-template-columns:1fr}}
 @media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}.fgrid{grid-template-columns:1fr}.card img{height:140px}}
 @media(max-width:600px){.toolbar{display:block}.toolbar input,.toolbar select{width:100%;margin-bottom:8px}.hero{padding:56px 15px}.section{padding:40px 0}}
+.flashbanner{background:linear-gradient(90deg,#c23b3b,#e0453f);color:#fff;overflow:hidden}
+.flashinner{display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 16px;font-weight:800;font-size:14px;flex-wrap:wrap}
+.flashtimer{background:rgba(0,0,0,.18);padding:4px 12px;border-radius:8px;font:800 15px 'Plus Jakarta Sans';letter-spacing:1px}
+.imgwrap{position:relative}
+.pbadge{position:absolute;top:10px;left:10px;padding:5px 11px;border-radius:8px;font-size:10px;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:.6px;z-index:2}
+.pbadge.new{background:#187a5a}.pbadge.bestseller{background:#e0821a}.pbadge.limited{background:#c23b3b}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .65s ease,transform .65s ease}
+.reveal.show{opacity:1;transform:translateY(0)}
 </style>
 </head>
 <body>
@@ -113,17 +140,29 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
 </div>
 </header>
 
+<div id="flashBanner" class="hidden flashbanner">
+  <div class="wrap flashinner">
+    <span id="flashText"><i class="fa-solid fa-bolt"></i> Limited Time Offer</span>
+    <span class="flashtimer" id="flashTimer">--:--:--</span>
+  </div>
+</div>
+
 <div id="homeView">
-<section class="hero"><div class="wrap">
+<section class="hero"><div class="blob blob1"></div><div class="blob blob2"></div><div class="wrap">
   <span class="tag">Premium Digital Marketplace</span>
   <h1>Where <span>Innovation</span><br/>Meets Opportunity</h1>
   <p>Discover premium digital products, software, templates and useful resources — delivered instantly.</p>
   <a class="btn" href="#products">Explore Products <i class="fa-solid fa-arrow-right" style="margin-left:8px"></i></a>
+  <div class="statsbar" id="statsBar">
+    <div class="statcard"><b data-count="500">0</b><span>Happy Customers</span></div>
+    <div class="statcard"><b data-count="50">0</b><span>Digital Products</span></div>
+    <div class="statcard"><b data-count="24">0</b><span>Hours Support</span></div>
+  </div>
 </div></section>
 
 <main class="wrap">
-  <section class="section" id="categories"><span class="tag">Categories</span><h2>Browse by Category</h2><div class="cats" id="cats"></div></section>
-  <section class="section" id="products">
+  <section class="section reveal" id="categories"><span class="tag">Categories</span><h2>Browse by Category</h2><div class="cats" id="cats"></div></section>
+  <section class="section reveal" id="products">
     <span class="tag">Shop</span><h2>Featured Products</h2>
     <div class="toolbar">
       <input id="q" oninput="renderProducts()" placeholder="Search products..." type="search"/>
@@ -135,10 +174,10 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
     </div>
     <div class="grid" id="grid"><div class="empty">Loading products...</div></div>
   </section>
-  <section class="section" id="blog"><span class="tag">Blog</span><h2>Latest Insights</h2><p style="color:var(--muted)">News, tutorials, and updates are coming soon.</p></section>
+  <section class="section reveal" id="blog"><span class="tag">Blog</span><h2>Latest Insights</h2><p style="color:var(--muted)">News, tutorials, and updates are coming soon.</p></section>
 </main>
 
-<section class="cta">
+<section class="cta reveal">
   <h2>Ready to Transform Your Digital Experience?</h2>
   <p>Join our community and unlock premium digital products, tools, and resources crafted for your success.</p>
   <div class="btnrow">
@@ -273,7 +312,7 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
 
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js';
-import{getFirestore,collection,addDoc,onSnapshot,serverTimestamp,query,where,getDocs,orderBy,doc,setDoc,increment}from'https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js';
+import{getFirestore,collection,addDoc,onSnapshot,serverTimestamp,query,where,getDocs,orderBy,doc,setDoc,increment,getDoc}from'https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js';
 import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,updateProfile,signOut}from'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js';
 
 const firebaseConfig={
@@ -444,8 +483,11 @@ window.renderProducts=()=>{
   if(sort==='low')a.sort((x,y)=>(x.price||0)-(y.price||0));
   if(sort==='high')a.sort((x,y)=>(y.price||0)-(x.price||0));
   document.getElementById('grid').innerHTML=a.length?a.map(p=>`
-    <article class="card">
-      <a href="#product-${p.id}"><img loading="lazy" src="${esc(p.image||'https://via.placeholder.com/800x500?text=Product')}" alt="${esc(p.name)}" style="cursor:pointer"></a>
+    <article class="card reveal">
+      <div class="imgwrap">
+        ${p.badge&&p.badge!=='None'?`<span class="pbadge ${p.badge==='New'?'new':p.badge==='Bestseller'?'bestseller':'limited'}">${esc(p.badge)}</span>`:''}
+        <a href="#product-${p.id}"><img loading="lazy" src="${esc(p.image||'https://via.placeholder.com/800x500?text=Product')}" alt="${esc(p.name)}" style="cursor:pointer"></a>
+      </div>
       <div class="body">
         <div class="cat">${esc(p.category||'Digital')}</div>
         <h3><a href="#product-${p.id}" style="color:inherit;cursor:pointer">${esc(p.name)}</a></h3>
@@ -456,6 +498,7 @@ window.renderProducts=()=>{
         </div>
       </div>
     </article>`).join(''):'<div class="empty">No products found.</div>';
+  observeReveals();
 };
 function renderCats(){
   let cats=['All',...new Set(products.map(p=>p.category).filter(Boolean))];
@@ -465,6 +508,50 @@ function renderCats(){
 document.getElementById('year').textContent=new Date().getFullYear();
 updateCartCount();
 route();
+
+/* ---------- scroll reveal ---------- */
+const revealObserver=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');revealObserver.unobserve(e.target)}});
+},{threshold:.12});
+function observeReveals(){document.querySelectorAll('.reveal:not(.show)').forEach(el=>revealObserver.observe(el))}
+observeReveals();
+
+/* ---------- animated stats counter ---------- */
+const statsObserver=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    e.target.querySelectorAll('b[data-count]').forEach(b=>{
+      const target=parseInt(b.dataset.count,10),dur=1200,start=performance.now();
+      function tick(now){const p=Math.min(1,(now-start)/dur);b.textContent=Math.floor(p*target)+(p===1&&target>=100?'+':'');if(p<1)requestAnimationFrame(tick);else b.textContent=target+'+'}
+      requestAnimationFrame(tick);
+    });
+    statsObserver.unobserve(e.target);
+  });
+},{threshold:.4});
+const statsBarEl=document.getElementById('statsBar');
+if(statsBarEl)statsObserver.observe(statsBarEl);
+
+/* ---------- flash sale banner ---------- */
+(async function initFlashSale(){
+  try{
+    const snap=await getDoc(doc(db,'settings','flashsale'));
+    if(!snap.exists())return;
+    const s=snap.data();
+    if(!s.enabled||!s.endTime)return;
+    const end=new Date(s.endTime).getTime();
+    if(isNaN(end)||end<=Date.now())return;
+    document.getElementById('flashText').innerHTML=`<i class="fa-solid fa-bolt"></i> ${esc(s.text||'Limited Time Offer')}`;
+    document.getElementById('flashBanner').classList.remove('hidden');
+    const timerEl=document.getElementById('flashTimer');
+    function tick(){
+      const diff=end-Date.now();
+      if(diff<=0){document.getElementById('flashBanner').classList.add('hidden');clearInterval(iv);return}
+      const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s2=Math.floor((diff%60000)/1000);
+      timerEl.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s2).padStart(2,'0')}`;
+    }
+    tick();const iv=setInterval(tick,1000);
+  }catch(e){console.error(e)}
+})();
 
 /* ---------- visitor tracking (once per browser session) ---------- */
 (function trackVisit(){
