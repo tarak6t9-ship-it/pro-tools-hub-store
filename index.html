@@ -60,12 +60,11 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
 .paysummary img{width:60px;height:60px;border-radius:10px;object-fit:cover;background:#eef2f0}
 .paytabs{display:flex;gap:8px;margin-bottom:18px}
 .paytabs button{flex:1;padding:14px 10px;border-radius:14px;border:2px solid var(--line);background:#fff;cursor:pointer;transition:.15s}
-.paylogo{display:block;font:900 21px 'Plus Jakarta Sans';letter-spacing:-.5px}
-.paytabs button.bkash .paylogo{color:#e2136e}
-.paytabs button.nagad .paylogo{color:#ee2e24}
-.paytabs button.bkash.active{background:linear-gradient(135deg,#e2136e,#c2004f);border-color:#e2136e}
-.paytabs button.nagad.active{background:linear-gradient(135deg,#f6412d,#ee2e24);border-color:#ee2e24}
-.paytabs button.active .paylogo{color:#fff}
+.paylogo{display:block;height:28px;width:auto;margin:0 auto;object-fit:contain}
+.paytabs button.bkash,.paytabs button.nagad{background:#fff}
+.paytabs button.active{background:#f5f8f7;box-shadow:inset 0 0 0 2px currentColor}
+.paytabs button.bkash.active{color:#e2136e}
+.paytabs button.nagad.active{color:#ee2e24}
 .paynum.bkash{background:#fde6ef}.paynum.nagad{background:#feeae8}
 .amountnotice{display:flex;gap:10px;align-items:flex-start;background:#fff4e5;border:1px solid #f6d38a;color:#8a5a00;padding:12px 14px;border-radius:12px;font-size:13px;margin-bottom:16px;line-height:1.6}
 .amountnotice i{margin-top:2px}
@@ -234,8 +233,8 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
         <div style="flex:1"><div id="payName" style="font-weight:800"></div><div id="payPrice" class="price" style="margin:4px 0 0;font-size:18px"></div></div>
       </div>
       <div class="paytabs">
-        <button id="tabBkash" class="bkash active" onclick="setMethod('bKash')"><span class="paylogo">bKash</span></button>
-        <button id="tabNagad" class="nagad" onclick="setMethod('Nagad')"><span class="paylogo">Nagad</span></button>
+        <button id="tabBkash" class="bkash active" onclick="setMethod('bKash')"><img class="paylogo" src="bkash-logo.png" alt="bKash"></button>
+        <button id="tabNagad" class="nagad" onclick="setMethod('Nagad')"><img class="paylogo" src="nagad-logo.png" alt="Nagad"></button>
       </div>
       <div class="paynum bkash" id="paynumBox">
         <div>Send money to (<span id="payMethodLabel">bKash</span> Personal)<br/><b id="payNumber">01313267551</b></div>
