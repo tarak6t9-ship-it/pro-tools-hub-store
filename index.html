@@ -130,9 +130,11 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
 .pbadge.new{background:#187a5a}.pbadge.bestseller{background:#e0821a}.pbadge.limited{background:#c23b3b}
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .65s ease,transform .65s ease}
 .reveal.show{opacity:1;transform:translateY(0)}
-.pth-toast{position:fixed;left:50%;bottom:-80px;transform:translateX(-50%);background:#101827;color:#fff;padding:14px 20px;border-radius:14px;display:flex;align-items:center;gap:10px;font-size:14px;max-width:min(420px,92vw);box-shadow:0 14px 34px rgba(0,0,0,.28);z-index:100;opacity:0;transition:bottom .4s ease,opacity .4s ease}
-.pth-toast.show{bottom:24px;opacity:1}
-.pth-toast i{color:#3ddc97;font-size:18px;flex-shrink:0}
+.pth-toast{position:fixed;left:50%;bottom:-120px;transform:translateX(-50%);background:#101827;color:#fff;padding:20px 26px;border-radius:18px;display:flex;align-items:flex-start;gap:14px;font-size:16px;line-height:1.5;max-width:min(500px,94vw);box-shadow:0 18px 40px rgba(0,0,0,.35);z-index:100;opacity:0;transition:bottom .4s ease,opacity .4s ease}
+.pth-toast.show{bottom:28px;opacity:1}
+.pth-toast i{color:#3ddc97;font-size:26px;flex-shrink:0;margin-top:2px}
+.ad-slot{margin:24px auto;text-align:center}
+.ad-slot:empty{display:none}
 
 /* Deal of the Day */
 .dealcard{display:grid;grid-template-columns:280px 1fr;gap:28px;background:linear-gradient(135deg,#0e2b21,#154536);border-radius:24px;padding:28px;color:#fff;align-items:center}
@@ -189,6 +191,7 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
     <a href="#blog" data-i18n="nav_blog">Blog</a>
     <a href="#contact" data-i18n="nav_contact">Contact</a>
     <a href="#myorders" id="myOrdersLink" class="hidden" data-i18n="nav_myorders">My Orders</a>
+    <a href="#wallet" id="walletLink" class="hidden">Wallet: <b id="navWalletBalance">৳0</b></a>
     <a href="#login" id="loginLink" data-i18n="nav_login">Login</a>
     <a href="#register" id="registerLink" data-i18n="nav_register">Register</a>
     <span id="userEmail" class="hidden"></span>
@@ -204,6 +207,20 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
     <span id="flashText"><i class="fa-solid fa-bolt"></i> Limited Time Offer</span>
     <span class="flashtimer" id="flashTimer">--:--:--</span>
   </div>
+</div>
+
+<!-- AD SLOT 1: paste your Adsterra ad code between the div tags below -->
+<div class="wrap ad-slot" id="adSlotTop">
+  <script>
+    atOptions = {
+      'key' : '39d5cf3c4e97ed69bfb01ff94a6e86d1',
+      'format' : 'iframe',
+      'height' : 50,
+      'width' : 320,
+      'params' : {}
+    };
+  </script>
+  <script src="https://www.highrevenueformat.com/39d5cf3c4e97ed69bfb01ff94a6e86d1/invoke.js"></script>
 </div>
 
 <div id="homeView">
@@ -239,6 +256,21 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
     </div>
     <div class="grid" id="grid"><div class="empty">Loading products...</div></div>
   </section>
+
+  <!-- AD SLOT 2: paste your Adsterra ad code between the div tags below -->
+  <div class="ad-slot" id="adSlotMid">
+    <script>
+      atOptions = {
+        'key' : '0efb51f3c4068f3078f1729f95c957ea',
+        'format' : 'iframe',
+        'height' : 250,
+        'width' : 300,
+        'params' : {}
+      };
+    </script>
+    <script src="https://www.highrevenueformat.com/0efb51f3c4068f3078f1729f95c957ea/invoke.js"></script>
+  </div>
+
   <section class="section reveal" id="blog"><span class="tag">Blog</span><h2>Latest Insights</h2><p style="color:var(--muted)">News, tutorials, and updates are coming soon.</p></section>
 </main>
 
@@ -330,11 +362,15 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
 <div id="paymentView" class="hidden">
   <div class="wrap paywrap">
     <div id="payFormWrap">
-      <h2 style="font:800 24px 'Plus Jakarta Sans';margin:0 0 4px">Complete Payment</h2>
-      <p class="sub" style="color:var(--muted);font-size:14px;margin:0 0 20px">Send money and confirm below</p>
-      <div class="paysummary">
-        <img id="payImg" src="" alt=""/>
-        <div style="flex:1"><div id="payName" style="font-weight:800"></div><div id="payPrice" class="price" style="margin:4px 0 0;font-size:18px"></div></div>
+      <h2 style="font:800 24px 'Plus Jakarta Sans';margin:0 0 4px">Add Money to Wallet</h2>
+      <p class="sub" style="color:var(--muted);font-size:14px;margin:0 0 20px">Deposit funds, then buy any product instantly from your balance</p>
+      <div class="field"><label>Amount to Deposit (৳)</label><input id="depositAmount" type="number" step="1" placeholder="e.g. 500" oninput="updateDepositSummary()"/></div>
+      <div class="paysummary" style="justify-content:space-between">
+        <div>Deposit amount<br/><small style="color:var(--muted)">Cash-in charge</small></div>
+        <div style="text-align:right"><b id="depAmountShow">৳0</b><br/><small style="color:var(--muted)" id="depChargeShow">+ ৳0</small></div>
+      </div>
+      <div class="paynum bkash" id="depTotalBox" style="margin-top:-6px">
+        <div>Total to Send<br/><b id="depTotalShow" style="font-size:20px">৳0</b></div>
       </div>
       <div class="paytabs">
         <button id="tabBkash" class="bkash active" onclick="setMethod('bKash')"><img class="paylogo" src="bkash-logo.png" alt="bKash"></button>
@@ -347,22 +383,34 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
       <ol class="paysteps">
         <li>Open your <span id="payMethodLabel2">bKash</span> app</li>
         <li>Select <b>Send Money</b></li>
-        <li>Enter the number above and the exact amount</li>
+        <li>Enter the number above and the exact total shown</li>
         <li>Complete the payment and copy the Transaction ID</li>
         <li>Paste the Transaction ID below and submit</li>
       </ol>
-      <div class="amountnotice"><i class="fa-solid fa-triangle-exclamation"></i><div>You must send the <b>exact amount: <span id="requiredAmount"></span></b>. If you send less than this amount, your order will not be approved and you will not receive the file.</div></div>
+      <div class="amountnotice"><i class="fa-solid fa-triangle-exclamation"></i><div>Send the <b>exact total: <span id="requiredAmount">৳0</span></b> (includes cash-in charge). Sending less will delay or reject your deposit.</div></div>
       <div id="payMsg"></div>
-      <div class="field"><label>Amount You Sent (৳)</label><input id="paidAmount" type="number" step="0.01" placeholder="e.g. 500"/></div>
+      <div class="field"><label>Amount You Sent (৳)</label><input id="paidAmount" type="number" step="0.01" placeholder="e.g. 510"/></div>
       <div class="field"><label>Transaction ID</label><input id="trxId" type="text" placeholder="e.g. 8N7A2K9XYZ"/></div>
-      <button class="btn" style="width:100%;height:52px" onclick="submitPayment()">I've Sent the Payment</button>
+      <button class="btn" style="width:100%;height:52px" onclick="submitDeposit()">I've Sent the Payment</button>
     </div>
     <div id="payConfirmWrap" class="hidden confirmbox">
       <i class="fa-solid fa-circle-check"></i>
-      <h2 style="font:800 22px 'Plus Jakarta Sans'">Order Submitted!</h2>
-      <p style="color:var(--muted)">We're verifying your payment. Your order will be confirmed and delivered within 24 hours. You can check status from My Orders.</p>
-      <a class="btn" href="#myorders">View My Orders</a>
+      <h2 style="font:800 22px 'Plus Jakarta Sans'">Deposit Submitted!</h2>
+      <p style="color:var(--muted)">We're verifying your payment. Your wallet balance will be updated shortly. You can check status from your Wallet page.</p>
+      <a class="btn" href="#wallet">Go to Wallet</a>
     </div>
+  </div>
+</div>
+
+<div id="walletView" class="hidden">
+  <div class="wrap" style="max-width:640px;margin:40px auto;padding:0 16px">
+    <h2 style="font:800 28px 'Plus Jakarta Sans'">My Wallet</h2>
+    <div class="paysummary" style="background:linear-gradient(135deg,#0e2b21,#154536);color:#fff;margin:16px 0">
+      <div style="flex:1"><div style="color:#cfe6db;font-size:13px">Current Balance</div><div style="font:900 34px 'Plus Jakarta Sans'" id="walletBalanceShow">৳0.00</div></div>
+      <a class="btn" href="#pay">+ Add Money</a>
+    </div>
+    <h3 style="font:800 17px 'Plus Jakarta Sans';margin:26px 0 10px">Deposit History</h3>
+    <div id="depositList"></div>
   </div>
 </div>
 
@@ -395,15 +443,16 @@ const money=n=>'৳'+Number(n||0).toFixed(2);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 
 /* ---------- routing ---------- */
-const views={home:'homeView',login:'loginView',register:'registerView',cart:'cartView',pay:'paymentView',myorders:'myOrdersView',product:'productView'};
+const views={home:'homeView',login:'loginView',register:'registerView',cart:'cartView',pay:'paymentView',myorders:'myOrdersView',product:'productView',wallet:'walletView'};
 function route(){
   let h=(location.hash||'#home').replace('#','');
   if(['products','categories','blog','contact'].includes(h)){document.getElementById('homeView').classList.remove('hidden');
-    ['login','register','cart','pay','myorders','product'].forEach(v=>document.getElementById(views[v]).classList.add('hidden'));
+    ['login','register','cart','pay','myorders','product','wallet'].forEach(v=>document.getElementById(views[v]).classList.add('hidden'));
     setTimeout(()=>document.getElementById(h)?.scrollIntoView({behavior:'smooth'}),50);return}
   if(h.startsWith('product-')){openProductView(h.slice(8));return}
-  if(h==='pay'){if(!currentUser||!getPendingProduct()){location.hash=currentUser?'#products':'#login';return}openPaymentView()}
+  if(h==='pay'){if(!currentUser){location.hash='#login';return}openPaymentView()}
   if(h==='myorders'){if(!currentUser){location.hash='#login';return}loadMyOrders()}
+  if(h==='wallet'){if(!currentUser){location.hash='#login';return}loadWalletPage()}
   Object.keys(views).forEach(v=>document.getElementById(views[v]).classList.toggle('hidden',v!==h && !(h==='home'&&v==='home')));
   if(h==='cart')renderCart();
   if(h==='register'){const c=document.getElementById('registerCard');c.classList.remove('anim3d');void c.offsetWidth;c.classList.add('anim3d')}
@@ -418,11 +467,46 @@ document.getElementById('menuBtn').onclick=()=>document.getElementById('navMenu'
 /* ---------- auth ---------- */
 onAuthStateChanged(auth,user=>{
   currentUser=user;
-  const li=document.getElementById('loginLink'),ri=document.getElementById('registerLink'),ue=document.getElementById('userEmail'),lo=document.getElementById('logoutLink'),mo=document.getElementById('myOrdersLink');
-  if(user){li.classList.add('hidden');ri.classList.add('hidden');ue.classList.remove('hidden');lo.classList.remove('hidden');mo.classList.remove('hidden');ue.textContent=user.displayName||user.email;checkOrderNotifications(user.uid)}
-  else{li.classList.remove('hidden');ri.classList.remove('hidden');ue.classList.add('hidden');lo.classList.add('hidden');mo.classList.add('hidden')}
+  const li=document.getElementById('loginLink'),ri=document.getElementById('registerLink'),ue=document.getElementById('userEmail'),lo=document.getElementById('logoutLink'),mo=document.getElementById('myOrdersLink'),wl=document.getElementById('walletLink');
+  if(user){li.classList.add('hidden');ri.classList.add('hidden');ue.classList.remove('hidden');lo.classList.remove('hidden');mo.classList.remove('hidden');wl.classList.remove('hidden');ue.textContent=user.displayName||user.email;checkOrderNotifications(user.uid);refreshWalletBalance()}
+  else{li.classList.remove('hidden');ri.classList.remove('hidden');ue.classList.add('hidden');lo.classList.add('hidden');mo.classList.add('hidden');wl.classList.add('hidden')}
 });
 document.getElementById('logoutLink').onclick=e=>{e.preventDefault();signOut(auth);location.hash='#home'};
+
+/* ---------- wallet ---------- */
+async function getWalletBalance(uid){
+  try{const snap=await getDoc(doc(db,'wallets',uid));return snap.exists()?Number(snap.data().balance||0):0}
+  catch(e){return 0}
+}
+async function refreshWalletBalance(){
+  if(!currentUser)return;
+  const bal=await getWalletBalance(currentUser.uid);
+  document.getElementById('navWalletBalance').textContent=money(bal);
+  const wb=document.getElementById('walletBalanceShow');if(wb)wb.textContent=money(bal);
+}
+async function loadWalletPage(){
+  await refreshWalletBalance();
+  const list=document.getElementById('depositList');
+  list.innerHTML='<p class="empty">Loading...</p>';
+  try{
+    const qs=await getDocs(query(collection(db,'deposits'),where('uid','==',currentUser.uid)));
+    let docs=qs.docs.sort((a,b)=>(b.data().createdAt?.seconds||0)-(a.data().createdAt?.seconds||0));
+    if(!docs.length){list.innerHTML='<p style="color:var(--muted)">No deposits yet.</p>';return}
+    list.innerHTML=docs.map(d=>{const o=d.data();const approved=o.status==='approved';
+      return `<div class="orderrow"><div class="otop"><b>${money(o.requestedAmount)} deposit</b><span class="badge ${approved?'confirmed':'pending'}">${approved?'Approved':'Pending'}</span></div>
+      <div style="color:var(--muted);font-size:13px">Sent ${money(o.amountSent)} via ${esc(o.paymentMethod||'')} • Trx: ${esc(o.transactionId||'')}</div></div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<p class="empty">Could not load deposits.</p>';console.error(e)}
+}
+window.updateDepositSummary=()=>{
+  const amt=Math.max(0,Math.round(Number(document.getElementById('depositAmount').value||0)));
+  const charge=amt<=500?10:20;
+  const total=amt+charge;
+  document.getElementById('depAmountShow').textContent=money(amt);
+  document.getElementById('depChargeShow').textContent='+ '+money(charge);
+  document.getElementById('depTotalShow').textContent=money(total);
+  document.getElementById('requiredAmount').textContent=money(total);
+};
 
 /* ---------- confirmed-order toast notifications ---------- */
 function showToast(msg){
@@ -431,7 +515,7 @@ function showToast(msg){
   t.innerHTML=`<i class="fa-solid fa-circle-check"></i><span>${msg}</span>`;
   document.body.appendChild(t);
   requestAnimationFrame(()=>t.classList.add('show'));
-  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400)},6000);
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400)},7500);
 }
 async function checkOrderNotifications(uid){
   try{
@@ -450,7 +534,7 @@ window.doLogin=()=>{
   const email=document.getElementById('loginEmail').value.trim(),pass=document.getElementById('loginPass').value;
   const msg=document.getElementById('loginMsg');msg.innerHTML='';
   if(!email||!pass){msg.innerHTML='<div class="msg err">Please enter email and password.</div>';return}
-  signInWithEmailAndPassword(auth,email,pass).then(()=>{location.hash=getPendingProduct()?'#pay':'#home'}).catch(err=>{msg.innerHTML='<div class="msg err">'+esc(err.message)+'</div>'});
+  signInWithEmailAndPassword(auth,email,pass).then(()=>{resumePendingPurchase()}).catch(err=>{msg.innerHTML='<div class="msg err">'+esc(err.message)+'</div>'});
 };
 window.doRegister=()=>{
   const name=document.getElementById('regName').value.trim(),email=document.getElementById('regEmail').value.trim(),pass=document.getElementById('regPass').value;
@@ -459,9 +543,14 @@ window.doRegister=()=>{
   if(pass.length<6){msg.innerHTML='<div class="msg err">Password must be at least 6 characters.</div>';return}
   createUserWithEmailAndPassword(auth,email,pass).then(cred=>{
     if(name)updateProfile(cred.user,{displayName:name});
-    location.hash=getPendingProduct()?'#pay':'#home';
+    resumePendingPurchase();
   }).catch(err=>{msg.innerHTML='<div class="msg err">'+esc(err.message)+'</div>'});
 };
+function resumePendingPurchase(){
+  const p=getPendingProduct();
+  if(p){sessionStorage.removeItem('pth_pending');location.hash='#home';setTimeout(()=>buyNow(p.id),400)}
+  else location.hash='#home';
+}
 
 /* ---------- cart (localStorage) ---------- */
 function getCart(){try{return JSON.parse(localStorage.getItem('pth_cart')||'[]')}catch(e){return[]}}
@@ -477,28 +566,40 @@ function renderCart(){
     return `<div class="cartrow"><img src="${esc(p.image||'')}" alt=""><div class="ci"><h4>${esc(p.name)}</h4><div class="price" style="margin:0;font-size:16px">${money(p.price)}</div></div><button class="buy" style="width:auto;padding:10px 16px" onclick="buyNow('${p.id}')">Buy Now</button><button class="rm" onclick="removeFromCart('${p.id}');renderCart()">Remove</button></div>`}).join('');
 }
 
-/* ---------- buy now -> payment flow (requires login) ---------- */
+/* ---------- buy now -> wallet deduction (requires login) ---------- */
 const PAY_NUMBER='01313267551';
 let payMethod='bKash';
 function getPendingProduct(){try{return JSON.parse(sessionStorage.getItem('pth_pending')||'null')}catch(e){return null}}
 function setPendingProduct(p){sessionStorage.setItem('pth_pending',JSON.stringify({id:p.id,name:p.name,price:p.price||0,image:p.image||''}))}
-window.buyNow=(id)=>{
+window.buyNow=async(id)=>{
   const p=products.find(x=>x.id===id);if(!p)return;
-  setPendingProduct(p);
-  if(!currentUser){location.hash='#login';return}
-  location.hash='#pay';
+  if(!currentUser){setPendingProduct(p);location.hash='#login';return}
+  const price=Number(p.price||0);
+  const bal=await getWalletBalance(currentUser.uid);
+  if(bal<price){
+    const need=(price-bal).toFixed(2);
+    showToast(`Insufficient balance. You need ৳${need} more — redirecting to Wallet.`);
+    setTimeout(()=>{location.hash='#wallet';const inp=document.getElementById('depositAmount');if(inp){inp.value=Math.ceil(price-bal);updateDepositSummary()}},900);
+    return;
+  }
+  try{
+    await updateDoc(doc(db,'wallets',currentUser.uid),{balance:increment(-price)});
+    await addDoc(collection(db,'orders'),{productId:p.id,productName:p.name,price,amountPaid:price,buyerUid:currentUser.uid,buyerEmail:currentUser.email,paymentMethod:'wallet',transactionId:'',status:'confirmed',deliveryLink:p.downloadLink||'',notified:false,createdAt:serverTimestamp()});
+    setCart(getCart().filter(x=>x!==p.id));
+    sessionStorage.removeItem('pth_pending');
+    refreshWalletBalance();
+    if(p.downloadLink){showToast(`Purchase successful! <a href="${esc(p.downloadLink)}" target="_blank" rel="noopener" style="color:#6fe3b4;font-weight:800">Download now</a>`)}
+    else{showToast('Purchase successful! Check My Orders to download once the file link is added.')}
+  }catch(e){console.error(e);showToast('Something went wrong. Please try again.')}
 };
 function openPaymentView(){
-  const p=getPendingProduct();if(!p)return;
-  document.getElementById('payImg').src=p.image||'https://via.placeholder.com/120?text=Item';
-  document.getElementById('payName').textContent=p.name;
-  document.getElementById('payPrice').textContent=money(p.price);
-  document.getElementById('requiredAmount').textContent=money(p.price);
+  document.getElementById('depositAmount').value='';
   document.getElementById('trxId').value='';
   document.getElementById('paidAmount').value='';
   document.getElementById('payMsg').innerHTML='';
   document.getElementById('payFormWrap').classList.remove('hidden');
   document.getElementById('payConfirmWrap').classList.add('hidden');
+  updateDepositSummary();
   setMethod('bKash');
 }
 window.setMethod=m=>{
@@ -511,19 +612,20 @@ window.setMethod=m=>{
   document.getElementById('paynumBox').className='paynum '+(m==='bKash'?'bkash':'nagad');
 };
 window.copyNumber=()=>{navigator.clipboard?.writeText(PAY_NUMBER);const b=event.target;const old=b.textContent;b.textContent='Copied!';setTimeout(()=>b.textContent=old,1500)};
-window.submitPayment=async()=>{
-  const p=getPendingProduct();if(!p)return;
+window.submitDeposit=async()=>{
+  const amt=Math.max(0,Math.round(Number(document.getElementById('depositAmount').value||0)));
+  const charge=amt<=500?10:20;
+  const total=amt+charge;
   const trx=document.getElementById('trxId').value.trim();
   const paid=parseFloat(document.getElementById('paidAmount').value);
   const msg=document.getElementById('payMsg');msg.innerHTML='';
+  if(!amt){msg.innerHTML='<div class="msg err">Please enter an amount to deposit.</div>';return}
   if(!paid||isNaN(paid)){msg.innerHTML='<div class="msg err">Please enter the amount you sent.</div>';return}
-  if(paid<Number(p.price||0)){msg.innerHTML=`<div class="msg err">You must send at least ${money(p.price)}. You entered ${money(paid)} — this is less than the required amount, so the file cannot be delivered. Please send the full amount and try again.</div>`;return}
+  if(paid<total){msg.innerHTML=`<div class="msg err">You must send the exact total of ${money(total)} (includes cash-in charge). You entered ${money(paid)}.</div>`;return}
   if(!trx){msg.innerHTML='<div class="msg err">Please enter your Transaction ID.</div>';return}
   if(!currentUser){location.hash='#login';return}
   try{
-    await addDoc(collection(db,'orders'),{productId:p.id,productName:p.name,price:p.price||0,amountPaid:paid,buyerUid:currentUser.uid,buyerEmail:currentUser.email,paymentMethod:payMethod,paymentNumber:PAY_NUMBER,transactionId:trx,status:'pending_verification',notified:false,createdAt:serverTimestamp()});
-    setCart(getCart().filter(x=>x!==p.id));
-    sessionStorage.removeItem('pth_pending');
+    await addDoc(collection(db,'deposits'),{uid:currentUser.uid,email:currentUser.email,requestedAmount:amt,chargeAmount:charge,totalExpected:total,amountSent:paid,paymentMethod:payMethod,paymentNumber:PAY_NUMBER,transactionId:trx,status:'pending',createdAt:serverTimestamp()});
     document.getElementById('payFormWrap').classList.add('hidden');
     document.getElementById('payConfirmWrap').classList.remove('hidden');
   }catch(e){msg.innerHTML='<div class="msg err">Something went wrong. Please try again.</div>';console.error(e)}
@@ -544,7 +646,7 @@ async function loadMyOrders(){
         <div class="step done"><div class="line"></div><div class="dot"><i class="fa-solid fa-check"></i></div><small>Payment Sent</small></div>
         <div class="step ${confirmed?'done':''}"><div class="line"></div><div class="dot">${confirmed?'<i class="fa-solid fa-check"></i>':'<i class="fa-solid fa-hourglass-half"></i>'}</div><small>${confirmed?'Confirmed':'Verifying'}</small></div>
       </div>
-      <div style="color:var(--muted);font-size:13px">${money(o.price)} • ${esc(o.paymentMethod||'')} • Trx: ${esc(o.transactionId||'')}</div>
+      <div style="color:var(--muted);font-size:13px">${money(o.price)} • ${esc(o.paymentMethod||'')}${o.transactionId?' • Trx: '+esc(o.transactionId):''}</div>
       ${confirmed&&o.deliveryLink?`<a class="dllink" href="${esc(o.deliveryLink)}" target="_blank" rel="noopener"><i class="fa-solid fa-download"></i> Download / Access</a>`:'<div style="color:var(--muted);font-size:13px;margin-top:8px">We are verifying your payment. This may take up to 24 hours.</div>'}
       </div>`}).join('');
   }catch(e){list.innerHTML='<p class="empty">Could not load orders.</p>';console.error(e)}
