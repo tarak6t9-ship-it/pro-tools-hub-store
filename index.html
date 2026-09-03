@@ -584,14 +584,15 @@ window.buyNow=async(id)=>{
   }
   try{
     await updateDoc(doc(db,'wallets',currentUser.uid),{balance:increment(-price)});
-    await addDoc(collection(db,'orders'),{productId:p.id,productName:p.name,price,amountPaid:price,buyerUid:currentUser.uid,buyerEmail:currentUser.email,paymentMethod:'wallet',transactionId:'',status:'confirmed',deliveryLink:p.downloadLink||'',notified:false,createdAt:serverTimestamp()});
+    const orderRef=await addDoc(collection(db,'orders'),{productId:p.id,productName:p.name,price,amountPaid:price,buyerUid:currentUser.uid,buyerEmail:currentUser.email,paymentMethod:'wallet',transactionId:'',status:'confirmed',deliveryLink:p.downloadLink||'',notified:false,downloaded:false,createdAt:serverTimestamp()});
     setCart(getCart().filter(x=>x!==p.id));
     sessionStorage.removeItem('pth_pending');
     refreshWalletBalance();
-    if(p.downloadLink){showToast(`Purchase successful! <a href="${esc(p.downloadLink)}" target="_blank" rel="noopener" style="color:#6fe3b4;font-weight:800">Download now</a>`)}
+    if(p.downloadLink){showToast(`Purchase successful! <a href="${esc(p.downloadLink)}" target="_blank" rel="noopener" onclick="markDownloaded('${orderRef.id}')" style="color:#6fe3b4;font-weight:800">Download now</a> (one-time link)`)}
     else{showToast('Purchase successful! Check My Orders to download once the file link is added.')}
   }catch(e){console.error(e);showToast('Something went wrong. Please try again.')}
 };
+window.markDownloaded=(orderId)=>{updateDoc(doc(db,'orders',orderId),{downloaded:true}).catch(()=>{})};
 function openPaymentView(){
   document.getElementById('depositAmount').value='';
   document.getElementById('trxId').value='';
@@ -647,7 +648,12 @@ async function loadMyOrders(){
         <div class="step ${confirmed?'done':''}"><div class="line"></div><div class="dot">${confirmed?'<i class="fa-solid fa-check"></i>':'<i class="fa-solid fa-hourglass-half"></i>'}</div><small>${confirmed?'Confirmed':'Verifying'}</small></div>
       </div>
       <div style="color:var(--muted);font-size:13px">${money(o.price)} • ${esc(o.paymentMethod||'')}${o.transactionId?' • Trx: '+esc(o.transactionId):''}</div>
-      ${confirmed&&o.deliveryLink?`<a class="dllink" href="${esc(o.deliveryLink)}" target="_blank" rel="noopener"><i class="fa-solid fa-download"></i> Download / Access</a>`:'<div style="color:var(--muted);font-size:13px;margin-top:8px">We are verifying your payment. This may take up to 24 hours.</div>'}
+      ${(()=>{
+        if(!confirmed)return '<div style="color:var(--muted);font-size:13px;margin-top:8px">We are verifying your payment. This may take up to 24 hours.</div>';
+        if(!o.deliveryLink)return '<div style="color:var(--muted);font-size:13px;margin-top:8px">Confirmed — the download link will appear here shortly.</div>';
+        if(o.downloaded)return `<div style="margin-top:10px"><div style="color:#b3261e;font-size:13px;font-weight:700"><i class="fa-solid fa-circle-exclamation"></i> You've already downloaded this file (one-time link used).</div><button class="buy" style="margin-top:8px;width:auto;padding:10px 18px" onclick="buyNow('${o.productId}')">Buy Again to Re-download</button></div>`;
+        return `<a class="dllink" href="${esc(o.deliveryLink)}" target="_blank" rel="noopener" onclick="markDownloaded('${d.id}');this.closest('.orderrow').querySelector('.dllink-msg')?.remove();setTimeout(()=>loadMyOrders(),800)"><i class="fa-solid fa-download"></i> Download / Access (one-time)</a>`;
+      })()}
       </div>`}).join('');
   }catch(e){list.innerHTML='<p class="empty">Could not load orders.</p>';console.error(e)}
 }
