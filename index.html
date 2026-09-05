@@ -25,8 +25,17 @@ header{height:76px;background:rgba(255,255,255,.94);border-bottom:1px solid var(
 .iconbtn{border:0;background:none;font-size:20px;color:var(--ink);cursor:pointer;padding:8px;border-radius:10px;position:relative}
 .iconbtn:hover{background:#eef8f4}
 #cartCount{position:absolute;top:0;right:0;background:#e0453f;color:#fff;font-size:10px;font-weight:800;min-width:16px;height:16px;border-radius:99px;display:flex;align-items:center;justify-content:center;padding:0 3px}
-nav{margin-left:auto;display:none;gap:6px;align-items:center}nav a,nav .navbtn{padding:11px 14px;border-radius:12px;color:#536171;font-weight:700;background:none;border:0;cursor:pointer;font-size:15px}nav a:hover,nav .navbtn:hover{background:#eef8f4;color:var(--g)}
-nav.open{display:flex;position:absolute;top:76px;left:0;right:0;background:#fff;flex-direction:column;padding:14px;border-bottom:1px solid var(--line);box-shadow:0 12px 24px #10251c14;align-items:stretch}
+nav{margin-left:auto;display:none;gap:6px;align-items:center}
+nav a,nav .navbtn{padding:11px 14px;border-radius:12px;color:#536171;font-weight:700;background:none;border:0;cursor:pointer;font-size:15px}
+nav a:hover,nav .navbtn:hover{background:#eef8f4;color:var(--g)}
+nav.open{display:flex;position:absolute;top:84px;left:12px;right:12px;background:#fff;flex-direction:column;padding:10px;border-radius:20px;box-shadow:0 20px 48px rgba(16,37,28,.18);align-items:stretch;border:1px solid var(--line);gap:2px;animation:navDrop .25s ease}
+@keyframes navDrop{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+nav.open a,nav.open .navbtn{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;font-size:15px;color:#2e4a41}
+nav.open a i,nav.open .navbtn i{width:20px;text-align:center;color:var(--g);font-size:15px}
+nav.open a:hover,nav.open .navbtn:hover{background:#eef8f4}
+nav.open a#loginLink,nav.open a#registerLink{background:linear-gradient(135deg,#eaf7f2,#f4faf8);font-weight:800}
+nav.open .navdivider{height:1px;background:var(--line);margin:6px 4px}
+nav.open #userEmail{padding:12px 16px;font-weight:800;color:var(--g);font-size:13px}
 #userEmail{font-weight:800;color:var(--g);padding:11px 14px;font-size:13px}
 .hero{position:relative;overflow:hidden;padding:90px 20px 60px;text-align:center;background:linear-gradient(135deg,#0e2b21,#154536 55%,#0e2b21);color:#fff}
 .hero .blob{position:absolute;border-radius:50%;filter:blur(85px);opacity:.55;pointer-events:none;z-index:0}
@@ -192,16 +201,17 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
   <button class="iconbtn" id="menuBtn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
   <a class="brand" href="/">Pro Tools Hub</a>
   <nav id="navMenu">
-    <a href="#home" data-i18n="nav_home">Home</a>
-    <a href="#products" data-i18n="nav_products">Products</a>
-    <a href="#blog" data-i18n="nav_blog">Blog</a>
-    <a href="#contact" data-i18n="nav_contact">Contact</a>
-    <a href="#myorders" id="myOrdersLink" class="hidden" data-i18n="nav_myorders">My Orders</a>
-    <a href="#wallet" id="walletLink" class="hidden">Wallet: <b id="navWalletBalance">৳0</b></a>
-    <a href="#login" id="loginLink" data-i18n="nav_login">Login</a>
-    <a href="#register" id="registerLink" data-i18n="nav_register">Register</a>
+    <a href="#home" data-i18n="nav_home"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="#products" data-i18n="nav_products"><i class="fa-solid fa-box-open"></i> Products</a>
+    <a href="#blog" data-i18n="nav_blog"><i class="fa-solid fa-newspaper"></i> Blog</a>
+    <a href="#contact" data-i18n="nav_contact"><i class="fa-solid fa-envelope"></i> Contact</a>
+    <div class="navdivider"></div>
+    <a href="#myorders" id="myOrdersLink" class="hidden" data-i18n="nav_myorders"><i class="fa-solid fa-receipt"></i> My Orders</a>
+    <a href="#wallet" id="walletLink" class="hidden"><i class="fa-solid fa-wallet"></i> Wallet: <b id="navWalletBalance">৳0</b></a>
     <span id="userEmail" class="hidden"></span>
-    <a href="#" id="logoutLink" class="hidden" data-i18n="nav_logout">Logout</a>
+    <a href="#" id="logoutLink" class="hidden" data-i18n="nav_logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+    <a href="#login" id="loginLink" data-i18n="nav_login"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+    <a href="#register" id="registerLink" data-i18n="nav_register"><i class="fa-solid fa-user-plus"></i> Register</a>
   </nav>
   <button class="iconbtn" id="langBtn" aria-label="Language" style="font-weight:800;font-size:13px;width:auto;padding:8px 10px">EN/বাং</button>
   <button class="iconbtn" id="cartBtn" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i><span id="cartCount">0</span></button>
