@@ -841,10 +841,12 @@ window.renderProducts=()=>{
   let a=products.filter(p=>(active==='All'||p.category===active)&&((p.name||'').toLowerCase().includes(q)||(p.category||'').toLowerCase().includes(q)));
   if(sort==='low')a.sort((x,y)=>(x.price||0)-(y.price||0));
   if(sort==='high')a.sort((x,y)=>(y.price||0)-(x.price||0));
+  a.sort((x,y)=>(y.pinned?1:0)-(x.pinned?1:0));
   document.getElementById('grid').innerHTML=a.length?a.map(p=>`
     <article class="card reveal">
       <div class="imgwrap">
         ${p.badge&&p.badge!=='None'?`<span class="pbadge ${p.badge==='New'?'new':p.badge==='Bestseller'?'bestseller':'limited'}">${esc(p.badge)}</span>`:''}
+        ${p.pinned?`<span class="pbadge" style="background:#2b6fd1;${p.badge&&p.badge!=='None'?'top:38px;':''}left:10px"><i class="fa-solid fa-thumbtack"></i> Pinned</span>`:''}
         <a href="#product-${p.id}"><img loading="lazy" src="${esc(p.image||'https://via.placeholder.com/800x500?text=Product')}" alt="${esc(p.name)}" style="cursor:pointer"></a>
         <button class="qv-btn-wrap" onclick="openQuickView('${p.id}')" style="position:absolute;bottom:10px;right:10px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 11px;font-size:12px;font-weight:800;cursor:pointer;align-items:center;gap:6px;z-index:2"><i class="fa-solid fa-eye"></i> <span data-i18n="btn_quickview">Quick View</span></button>
       </div>
