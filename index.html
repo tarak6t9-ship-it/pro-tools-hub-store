@@ -134,6 +134,10 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
 .pdthumbs img.active{border-color:var(--g)}
 .pddesc{color:#536171;line-height:1.8;white-space:pre-line;margin:18px 0}
 .backlink{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-weight:700;margin-bottom:18px}
+.planopt{display:flex;align-items:center;justify-content:space-between;border:2px solid var(--line);border-radius:14px;padding:13px 16px;margin-bottom:8px;cursor:pointer;transition:.15s}
+.planopt.sel{border-color:var(--g);background:#eaf7f2}
+.planopt .pl{font-weight:800;font-size:14.5px}
+.planopt .pp{font-weight:900;color:var(--g);font-size:16px}
 @media(max-width:700px){.pdgrid{grid-template-columns:1fr}}
 @media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}.fgrid{grid-template-columns:1fr}.card img{height:140px}}
 @media(max-width:600px){.toolbar{display:block}.toolbar input,.toolbar select{width:100%;margin-bottom:8px}.hero{padding:56px 15px}.section{padding:40px 0}}
@@ -365,8 +369,9 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
         <div class="cat" id="pdCat"></div>
         <h2 style="font:800 30px 'Plus Jakarta Sans';margin:10px 0" id="pdName"></h2>
         <div class="price" id="pdPrice" style="font-size:28px"></div>
+        <div id="pdPlans" style="margin:14px 0"></div>
         <p class="pddesc" id="pdDesc"></p>
-        <div class="cardbtns" style="max-width:280px">
+        <div class="cardbtns" style="max-width:280px" id="pdBtnsWrap">
           <button class="addcart" id="pdAddCart">Add to Cart</button>
           <button class="buy" id="pdBuyNow">Buy Now</button>
         </div>
@@ -564,7 +569,7 @@ window.doRegister=()=>{
 };
 function resumePendingPurchase(){
   const p=getPendingProduct();
-  if(p){sessionStorage.removeItem('pth_pending');location.hash='#home';setTimeout(()=>buyNow(p.id),400)}
+  if(p){sessionStorage.removeItem('pth_pending');location.hash='#home';const plan=p.planLabel?{label:p.planLabel,price:p.planPrice,downloadLink:p.planLink}:undefined;setTimeout(()=>buyNow(p.id,plan),400)}
   else location.hash='#home';
 }
 
@@ -586,11 +591,13 @@ function renderCart(){
 const PAY_NUMBER='01313267551';
 let payMethod='bKash';
 function getPendingProduct(){try{return JSON.parse(sessionStorage.getItem('pth_pending')||'null')}catch(e){return null}}
-function setPendingProduct(p){sessionStorage.setItem('pth_pending',JSON.stringify({id:p.id,name:p.name,price:p.price||0,image:p.image||''}))}
-window.buyNow=async(id)=>{
+function setPendingProduct(p,plan){sessionStorage.setItem('pth_pending',JSON.stringify({id:p.id,name:p.name,price:(plan?plan.price:p.price)||0,image:p.image||'',planLabel:plan?plan.label:null,planPrice:plan?plan.price:null,planLink:plan?plan.downloadLink:null}))}
+window.buyNow=async(id,plan)=>{
   const p=products.find(x=>x.id===id);if(!p)return;
-  if(!currentUser){setPendingProduct(p);location.hash='#login';return}
-  const price=Number(p.price||0);
+  if(!currentUser){setPendingProduct(p,plan);location.hash='#login';return}
+  const price=Number(plan?plan.price:p.price||0);
+  const displayName=plan&&plan.label?`${p.name} (${plan.label})`:p.name;
+  const deliveryLink=(plan&&plan.downloadLink)?plan.downloadLink:(p.downloadLink||'');
   const bal=await getWalletBalance(currentUser.uid);
   if(bal<price){
     const need=(price-bal).toFixed(2);
@@ -600,11 +607,11 @@ window.buyNow=async(id)=>{
   }
   try{
     await updateDoc(doc(db,'wallets',currentUser.uid),{balance:increment(-price)});
-    const orderRef=await addDoc(collection(db,'orders'),{productId:p.id,productName:p.name,price,amountPaid:price,buyerUid:currentUser.uid,buyerEmail:currentUser.email,paymentMethod:'wallet',transactionId:'',status:'confirmed',deliveryLink:p.downloadLink||'',notified:false,downloaded:false,createdAt:serverTimestamp()});
+    const orderRef=await addDoc(collection(db,'orders'),{productId:p.id,productName:displayName,price,amountPaid:price,buyerUid:currentUser.uid,buyerEmail:currentUser.email,paymentMethod:'wallet',transactionId:'',status:'confirmed',deliveryLink,notified:false,downloaded:false,createdAt:serverTimestamp()});
     setCart(getCart().filter(x=>x!==p.id));
     sessionStorage.removeItem('pth_pending');
     refreshWalletBalance();
-    if(p.downloadLink){showToast(`Purchase successful! <a href="${esc(p.downloadLink)}" target="_blank" rel="noopener" onclick="markDownloaded('${orderRef.id}')" style="color:#6fe3b4;font-weight:800">Download now</a> (one-time link)`)}
+    if(deliveryLink){showToast(`Purchase successful! <a href="${esc(deliveryLink)}" target="_blank" rel="noopener" onclick="markDownloaded('${orderRef.id}')" style="color:#6fe3b4;font-weight:800">Download now</a> (one-time link)`)}
     else{showToast('Purchase successful! Check My Orders to download once the file link is added.')}
   }catch(e){console.error(e);showToast('Something went wrong. Please try again.')}
 };
@@ -685,10 +692,26 @@ function openProductView(id){
   document.getElementById('pdThumbs').innerHTML=imgs.map((im,i)=>`<img src="${esc(im)}" class="${i===0?'active':''}" onclick="document.getElementById('pdMainImg').src=this.src;document.querySelectorAll('#pdThumbs img').forEach(t=>t.classList.remove('active'));this.classList.add('active')">`).join('');
   document.getElementById('pdCat').textContent=p.category||'Digital';
   document.getElementById('pdName').textContent=p.name;
-  document.getElementById('pdPrice').innerHTML=money(p.price)+(p.oldPrice?` <span class="old">${money(p.oldPrice)}</span>`:'');
   document.getElementById('pdDesc').textContent=p.description||'No description provided for this product yet.';
-  document.getElementById('pdAddCart').onclick=()=>addToCart(p.id);
-  document.getElementById('pdBuyNow').onclick=()=>buyNow(p.id);
+  const plans=Array.isArray(p.plans)?p.plans.filter(pl=>pl.label):[];
+  const plansBox=document.getElementById('pdPlans');
+  if(plans.length){
+    let selIdx=0;
+    function renderPlanOpts(){
+      plansBox.innerHTML=`<div style="font-weight:800;font-size:13px;margin-bottom:8px">Choose a plan:</div>`+plans.map((pl,i)=>`<div class="planopt ${i===selIdx?'sel':''}" onclick="selectPlan(${i})"><span class="pl"><i class="fa-solid fa-circle-check" style="color:${i===selIdx?'var(--g)':'#d3ddd8'};margin-right:8px"></i>${esc(pl.label)}</span><span class="pp">${money(pl.price)}</span></div>`).join('');
+      document.getElementById('pdPrice').innerHTML=money(plans[selIdx].price);
+    }
+    window.selectPlan=(i)=>{selIdx=i;renderPlanOpts()};
+    renderPlanOpts();
+    document.getElementById('pdBtnsWrap').innerHTML=`<button class="buy" id="pdBuyNow" style="width:100%">Buy Now</button>`;
+    document.getElementById('pdBuyNow').onclick=()=>buyNow(p.id,plans[selIdx]);
+  }else{
+    plansBox.innerHTML='';
+    document.getElementById('pdPrice').innerHTML=money(p.price)+(p.oldPrice?` <span class="old">${money(p.oldPrice)}</span>`:'');
+    document.getElementById('pdBtnsWrap').innerHTML=`<button class="addcart" id="pdAddCart">Add to Cart</button><button class="buy" id="pdBuyNow">Buy Now</button>`;
+    document.getElementById('pdAddCart').onclick=()=>addToCart(p.id);
+    document.getElementById('pdBuyNow').onclick=()=>buyNow(p.id);
+  }
   trackRecentlyViewed(p.id);
   window.scrollTo(0,0);
 }
@@ -746,8 +769,11 @@ async function renderDealSection(){
 /* ---------- quick view modal ---------- */
 window.openQuickView=(id)=>{
   const p=products.find(x=>x.id===id);if(!p)return;
+  const plans=Array.isArray(p.plans)?p.plans.filter(pl=>pl.label):[];
   let ov=document.getElementById('qvOverlay');
   if(!ov){ov=document.createElement('div');ov.id='qvOverlay';ov.className='qv-overlay';ov.onclick=e=>{if(e.target===ov)closeQuickView()};document.body.appendChild(ov)}
+  const priceHtml=plans.length?`From ${money(Math.min(...plans.map(pl=>pl.price)))}`:`${money(p.price)} ${p.oldPrice?`<span class="old">${money(p.oldPrice)}</span>`:''}`;
+  const btnsHtml=plans.length?`<a class="buy" style="display:block;text-align:center;text-decoration:none" href="#product-${p.id}" onclick="closeQuickView()"><i class="fa-solid fa-layer-group"></i> Choose Plan</a>`:`<div class="cardbtns" style="max-width:280px"><button class="addcart" onclick="addToCart('${p.id}')" data-i18n="btn_addcart">Add to Cart</button><button class="buy" onclick="buyNow('${p.id}')" data-i18n="btn_buynow">Buy Now</button></div>`;
   ov.innerHTML=`<div class="qv-box">
     <button class="qv-close" onclick="closeQuickView()">✕</button>
     <div class="qv-grid">
@@ -755,12 +781,9 @@ window.openQuickView=(id)=>{
       <div class="qv-body">
         <div class="cat">${esc(p.category||'Digital')}</div>
         <h2 style="font:800 24px 'Plus Jakarta Sans';margin:8px 0">${esc(p.name)}</h2>
-        <div class="price" style="font-size:22px">${money(p.price)} ${p.oldPrice?`<span class="old">${money(p.oldPrice)}</span>`:''}</div>
+        <div class="price" style="font-size:22px">${priceHtml}</div>
         <p style="color:var(--muted);line-height:1.7;margin:14px 0;max-height:120px;overflow:auto">${esc(p.description||'No description provided.')}</p>
-        <div class="cardbtns" style="max-width:280px">
-          <button class="addcart" onclick="addToCart('${p.id}')" data-i18n="btn_addcart">Add to Cart</button>
-          <button class="buy" onclick="buyNow('${p.id}')" data-i18n="btn_buynow">Buy Now</button>
-        </div>
+        ${btnsHtml}
         <a href="#product-${p.id}" onclick="closeQuickView()" style="display:inline-block;margin-top:12px;color:var(--g);font-weight:700;font-size:13px">View Full Details →</a>
       </div>
     </div>
@@ -828,11 +851,13 @@ window.renderProducts=()=>{
       <div class="body">
         <div class="cat">${esc(p.category||'Digital')}</div>
         <h3><a href="#product-${p.id}" style="color:inherit;cursor:pointer">${esc(p.name)}</a></h3>
-        <div class="price">${money(p.price)} ${p.oldPrice?`<span class="old">${money(p.oldPrice)}</span>`:''}</div>
+        ${(Array.isArray(p.plans)&&p.plans.length)?`<div class="price">From ${money(Math.min(...p.plans.map(pl=>pl.price)))}</div>
+        <div class="cardbtns"><button class="buy" style="width:100%" onclick="location.hash='#product-${p.id}'"><i class="fa-solid fa-layer-group"></i> Choose Plan</button></div>`
+        :`<div class="price">${money(p.price)} ${p.oldPrice?`<span class="old">${money(p.oldPrice)}</span>`:''}</div>
         <div class="cardbtns">
           <button class="addcart" onclick="addToCart('${p.id}')" data-i18n="btn_addcart">Add to Cart</button>
           <button class="buy" onclick="buyNow('${p.id}')" data-i18n="btn_buynow">Buy Now</button>
-        </div>
+        </div>`}
       </div>
     </article>`).join(''):'<div class="empty">No products found.</div>';
   observeReveals();
