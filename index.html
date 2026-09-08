@@ -240,7 +240,7 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
       'params' : {}
     };
   </script>
-  <script src="https://www.highrevenueformat.com/39d5cf3c4e97ed69bfb01ff94a6e86d1/invoke.js"></script>
+  <script async src="https://www.highrevenueformat.com/39d5cf3c4e97ed69bfb01ff94a6e86d1/invoke.js"></script>
 </div>
 
 <div id="homeView">
@@ -288,7 +288,7 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
         'params' : {}
       };
     </script>
-    <script src="https://www.highrevenueformat.com/0efb51f3c4068f3078f1729f95c957ea/invoke.js"></script>
+    <script async src="https://www.highrevenueformat.com/0efb51f3c4068f3078f1729f95c957ea/invoke.js"></script>
   </div>
 
   <section class="section reveal" id="blog"><span class="tag">Blog</span><h2>Latest Insights</h2><p style="color:var(--muted)">News, tutorials, and updates are coming soon.</p></section>
@@ -934,10 +934,17 @@ if(statsBarEl)statsObserver.observe(statsBarEl);
   setDoc(doc(db,'visits',today),{count:increment(1)},{merge:true}).then(()=>sessionStorage.setItem(key,'1')).catch(()=>{});
 })();
 
+let productsLoaded=false;
+const loadTimeoutId=setTimeout(()=>{
+  if(!productsLoaded){
+    document.getElementById('grid').innerHTML=`<div class="empty">This is taking longer than usual — your internet connection may be slow.<br><button class="btn" style="margin-top:14px" onclick="location.reload()">Retry</button></div>`;
+  }
+},9000);
 onSnapshot(collection(db,'products'),snap=>{
+  productsLoaded=true;clearTimeout(loadTimeoutId);
   products=snap.docs.map(d=>({id:d.id,...d.data()}));
   renderCats();renderProducts();renderDealSection();renderRecentSection();
-},err=>{document.getElementById('grid').innerHTML='<div class="empty">Firebase connection error. Check your configuration.</div>';console.error(err)});
+},err=>{clearTimeout(loadTimeoutId);document.getElementById('grid').innerHTML=`<div class="empty">Could not load products. Please check your internet connection.<br><button class="btn" style="margin-top:14px" onclick="location.reload()">Retry</button></div>`;console.error(err)});
 </script>
 </body>
 </html>
