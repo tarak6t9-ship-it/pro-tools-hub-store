@@ -14,6 +14,9 @@
 <meta name="twitter:title" content="Pro Tools Hub — Premium Digital Marketplace"/>
 <meta name="twitter:description" content="Discover premium digital products, software, templates and useful resources."/>
 <meta name="twitter:image" content="og-image.png"/>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#187a5a"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
 <style>
@@ -196,6 +199,13 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
 .otimeline .step:first-child .line{display:none}
 .otimeline .step.done .line{background:var(--g)}
 .otimeline small{font-size:10.5px;color:var(--muted);font-weight:700}
+.legalbox h1{font:800 28px 'Plus Jakarta Sans';margin:0 0 6px}
+.legalbox p.updated{color:var(--muted);font-size:13px;margin:0 0 24px}
+.legalbox h3{font:800 17px 'Plus Jakarta Sans';margin:26px 0 8px;color:var(--g)}
+.legalbox p,.legalbox li{color:#3c4a45;line-height:1.8;font-size:14.5px}
+.legalbox ul{padding-left:20px}
+.oos-badge{position:absolute;top:10px;right:10px;background:#4a5a54;color:#fff;padding:5px 11px;border-radius:8px;font-size:10px;font-weight:900;text-transform:uppercase;z-index:2}
+.btn[disabled]{opacity:.5;cursor:not-allowed;pointer-events:none}
 </style>
 </head>
 <body>
@@ -323,7 +333,7 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
       <div class="finfo"><i class="fa-solid fa-location-dot"></i> Dhaka, Bangladesh</div>
     </div>
   </div>
-  <div class="fbottom">© <span id="year"></span> Pro Tools Hub. All rights reserved.</div>
+  <div class="fbottom">© <span id="year"></span> Pro Tools Hub. All rights reserved. &nbsp;•&nbsp; <a href="#terms" style="color:inherit">Terms</a> &nbsp;•&nbsp; <a href="#privacy" style="color:inherit">Privacy</a> &nbsp;•&nbsp; <a href="#refund" style="color:inherit">Refund Policy</a></div>
 </div></footer>
 </div>
 
@@ -345,6 +355,7 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
     <div class="field"><label>Full Name</label><input id="regName" type="text" placeholder="Your name"/></div>
     <div class="field"><label>Email Address</label><input id="regEmail" type="email" placeholder="you@example.com"/></div>
     <div class="field"><label>Password</label><input id="regPass" type="password" placeholder="At least 6 characters"/></div>
+    <div class="field"><label>Referral Code (optional)</label><input id="regReferral" type="text" placeholder="Friend's referral code"/></div>
     <button class="btn" onclick="doRegister()">Create Account</button>
     <div class="switch">Already have an account? <a href="#login">Sign In</a></div>
   </div></div>
@@ -378,6 +389,10 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
       </div>
     </div>
   </div>
+</div>
+
+<div id="legalView" class="hidden">
+  <div class="wrap" style="max-width:760px;margin:40px auto;padding:0 16px" id="legalContent"></div>
 </div>
 
 <div id="paymentView" class="hidden">
@@ -430,6 +445,16 @@ footer{margin-top:0;padding:50px 0 30px;background:#eff5f3;color:#4a5a54}
       <div style="flex:1"><div style="color:#cfe6db;font-size:13px">Current Balance</div><div style="font:900 34px 'Plus Jakarta Sans'" id="walletBalanceShow">৳0.00</div></div>
       <a class="btn" href="#pay">+ Add Money</a>
     </div>
+    <div class="paysummary" style="background:#eaf7f2;margin:16px 0">
+      <div style="flex:1">
+        <div style="font-weight:800;font-size:14px;margin-bottom:4px"><i class="fa-solid fa-gift" style="color:var(--g)"></i> Invite Friends, Earn ৳10 Each!</div>
+        <div style="color:var(--muted);font-size:13px;margin-bottom:10px">Share your code — you and your friend both get ৳10 when their referral is approved.</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <code id="refCodeShow" style="background:#fff;border:1.5px solid var(--line);padding:8px 12px;border-radius:10px;font-weight:800;font-size:13px;flex:1;overflow:auto"></code>
+          <button class="copybtn" onclick="copyReferralCode()">Copy</button>
+        </div>
+      </div>
+    </div>
     <h3 style="font:800 17px 'Plus Jakarta Sans';margin:26px 0 10px">Deposit History</h3>
     <div id="depositList"></div>
   </div>
@@ -464,19 +489,40 @@ const money=n=>'৳'+Number(n||0).toFixed(2);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 
 /* ---------- routing ---------- */
-const views={home:'homeView',login:'loginView',register:'registerView',cart:'cartView',pay:'paymentView',myorders:'myOrdersView',product:'productView',wallet:'walletView'};
+const views={home:'homeView',login:'loginView',register:'registerView',cart:'cartView',pay:'paymentView',myorders:'myOrdersView',product:'productView',wallet:'walletView',legal:'legalView'};
+const LEGAL_PAGES={
+  terms:{title:'Terms & Conditions',body:`<h3>1. About Pro Tools Hub</h3><p>Pro Tools Hub is a digital marketplace offering downloadable digital products, software, and templates. By using this website, you agree to these terms.</p>
+  <h3>2. Purchases & Wallet</h3><p>Purchases are made using your in-site Wallet balance, which you top up via manual bKash/Nagad deposit. Deposits are reviewed and approved before funds are added to your Wallet.</p>
+  <h3>3. Digital Delivery</h3><p>Digital products are delivered instantly via a download link after a successful Wallet purchase. Each purchase grants a one-time download; a repeat download requires a new purchase.</p>
+  <h3>4. Account Responsibility</h3><p>You are responsible for keeping your account credentials secure. Pro Tools Hub is not liable for losses resulting from unauthorized account access caused by your own negligence.</p>
+  <h3>5. Changes</h3><p>We may update these terms from time to time. Continued use of the site after changes means you accept the updated terms.</p>`},
+  privacy:{title:'Privacy Policy',body:`<h3>1. Information We Collect</h3><p>We collect your email address, name (optional), order history, and Wallet transaction records to operate your account and process purchases.</p>
+  <h3>2. How We Use It</h3><p>Your information is used solely to manage your account, process deposits/purchases, deliver digital products, and provide customer support.</p>
+  <h3>3. Data Storage</h3><p>Data is stored securely using Google Firebase. We do not sell your personal information to third parties.</p>
+  <h3>4. Cookies & Local Storage</h3><p>We use browser local storage to remember your cart and language preference. No third-party tracking cookies are used beyond standard advertising partners shown on this site.</p>
+  <h3>5. Contact</h3><p>For privacy concerns, contact us at support@protoolshub.shop.</p>`},
+  refund:{title:'Refund Policy',body:`<h3>1. Digital Products — No Refunds After Download</h3><p>Because our products are digital and delivered instantly, all sales are final once a download link has been accessed.</p>
+  <h3>2. Before Download</h3><p>If you purchased a product but have not yet clicked the download link, contact support within 24 hours for a Wallet balance refund.</p>
+  <h3>3. Deposit Errors</h3><p>If you sent an incorrect deposit amount or believe your deposit was wrongly rejected, contact support with your Transaction ID for review.</p>
+  <h3>4. Faulty Files</h3><p>If a downloaded file is corrupted or does not match its description, contact support with proof for a replacement or Wallet credit.</p>`}
+};
+function openLegalPage(key){
+  const p=LEGAL_PAGES[key];if(!p)return;
+  document.getElementById('legalContent').innerHTML=`<div class="legalbox"><h1>${p.title}</h1><p class="updated">Last updated: ${new Date().getFullYear()}</p>${p.body}</div>`;
+}
 function route(){
   let h=(location.hash||'#home').replace('#','');
   if(['products','categories','blog','contact'].includes(h)){document.getElementById('homeView').classList.remove('hidden');
-    ['login','register','cart','pay','myorders','product','wallet'].forEach(v=>document.getElementById(views[v]).classList.add('hidden'));
+    ['login','register','cart','pay','myorders','product','wallet','legal'].forEach(v=>document.getElementById(views[v]).classList.add('hidden'));
     setTimeout(()=>document.getElementById(h)?.scrollIntoView({behavior:'smooth'}),50);return}
   if(h.startsWith('product-')){openProductView(h.slice(8));return}
+  if(['terms','privacy','refund'].includes(h)){openLegalPage(h);h='legal'}
   if(h==='pay'){if(!currentUser){location.hash='#login';return}openPaymentView()}
   if(h==='myorders'){if(!currentUser){location.hash='#login';return}loadMyOrders()}
   if(h==='wallet'){if(!currentUser){location.hash='#login';return}loadWalletPage()}
   Object.keys(views).forEach(v=>document.getElementById(views[v]).classList.toggle('hidden',v!==h && !(h==='home'&&v==='home')));
   if(h==='cart')renderCart();
-  if(h==='register'){const c=document.getElementById('registerCard');c.classList.remove('anim3d');void c.offsetWidth;c.classList.add('anim3d')}
+  if(h==='register'){const c=document.getElementById('registerCard');c.classList.remove('anim3d');void c.offsetWidth;c.classList.add('anim3d');const ref=new URLSearchParams(location.search).get('ref');if(ref)document.getElementById('regReferral').value=ref}
   window.scrollTo(0,0);
   document.getElementById('navMenu').classList.remove('open');
 }
@@ -507,6 +553,7 @@ async function refreshWalletBalance(){
 }
 async function loadWalletPage(){
   await refreshWalletBalance();
+  document.getElementById('refCodeShow').textContent=currentUser.uid;
   const list=document.getElementById('depositList');
   list.innerHTML='<p class="empty">Loading...</p>';
   try{
@@ -519,6 +566,7 @@ async function loadWalletPage(){
     }).join('');
   }catch(e){list.innerHTML='<p class="empty">Could not load deposits.</p>';console.error(e)}
 }
+window.copyReferralCode=()=>{const code=currentUser?.uid||'';navigator.clipboard?.writeText(code);const b=event.target;const old=b.textContent;b.textContent='Copied!';setTimeout(()=>b.textContent=old,1500)};
 window.updateDepositSummary=()=>{
   const amt=Math.max(0,Math.round(Number(document.getElementById('depositAmount').value||0)));
   const charge=amt<=500?10:20;
@@ -559,11 +607,15 @@ window.doLogin=()=>{
 };
 window.doRegister=()=>{
   const name=document.getElementById('regName').value.trim(),email=document.getElementById('regEmail').value.trim(),pass=document.getElementById('regPass').value;
+  const refCode=document.getElementById('regReferral').value.trim();
   const msg=document.getElementById('registerMsg');msg.innerHTML='';
   if(!email||!pass){msg.innerHTML='<div class="msg err">Please fill all required fields.</div>';return}
   if(pass.length<6){msg.innerHTML='<div class="msg err">Password must be at least 6 characters.</div>';return}
-  createUserWithEmailAndPassword(auth,email,pass).then(cred=>{
+  createUserWithEmailAndPassword(auth,email,pass).then(async cred=>{
     if(name)updateProfile(cred.user,{displayName:name});
+    if(refCode&&refCode!==cred.user.uid){
+      try{await addDoc(collection(db,'referrals'),{newUserUid:cred.user.uid,newUserEmail:email,referrerUid:refCode,status:'pending',createdAt:serverTimestamp()});}catch(e){console.error(e)}
+    }
     resumePendingPurchase();
   }).catch(err=>{msg.innerHTML='<div class="msg err">'+esc(err.message)+'</div>'});
 };
@@ -594,6 +646,7 @@ function getPendingProduct(){try{return JSON.parse(sessionStorage.getItem('pth_p
 function setPendingProduct(p,plan){sessionStorage.setItem('pth_pending',JSON.stringify({id:p.id,name:p.name,price:(plan?plan.price:p.price)||0,image:p.image||'',planLabel:plan?plan.label:null,planPrice:plan?plan.price:null,planLink:plan?plan.downloadLink:null}))}
 window.buyNow=async(id,plan)=>{
   const p=products.find(x=>x.id===id);if(!p)return;
+  if(p.outOfStock){showToast('This product is currently out of stock.');return}
   if(!currentUser){setPendingProduct(p,plan);location.hash='#login';return}
   const price=Number(plan?plan.price:p.price||0);
   const displayName=plan&&plan.label?`${p.name} (${plan.label})`:p.name;
@@ -693,6 +746,12 @@ function openProductView(id){
   document.getElementById('pdCat').textContent=p.category||'Digital';
   document.getElementById('pdName').textContent=p.name;
   document.getElementById('pdDesc').textContent=p.description||'No description provided for this product yet.';
+  if(p.outOfStock){
+    document.getElementById('pdPlans').innerHTML='';
+    document.getElementById('pdPrice').innerHTML=money(p.price);
+    document.getElementById('pdBtnsWrap').innerHTML=`<button class="buy" disabled style="background:#9aa4ae">Currently Unavailable</button>`;
+    trackRecentlyViewed(p.id);window.scrollTo(0,0);return;
+  }
   const plans=Array.isArray(p.plans)?p.plans.filter(pl=>pl.label):[];
   const plansBox=document.getElementById('pdPlans');
   if(plans.length){
@@ -847,13 +906,15 @@ window.renderProducts=()=>{
       <div class="imgwrap">
         ${p.badge&&p.badge!=='None'?`<span class="pbadge ${p.badge==='New'?'new':p.badge==='Bestseller'?'bestseller':'limited'}">${esc(p.badge)}</span>`:''}
         ${p.pinned?`<span class="pbadge" style="background:#2b6fd1;${p.badge&&p.badge!=='None'?'top:38px;':''}left:10px"><i class="fa-solid fa-thumbtack"></i> Pinned</span>`:''}
-        <a href="#product-${p.id}"><img loading="lazy" src="${esc(p.image||'https://via.placeholder.com/800x500?text=Product')}" alt="${esc(p.name)}" style="cursor:pointer"></a>
+        ${p.outOfStock?`<span class="oos-badge">Sold Out</span>`:''}
+        <a href="#product-${p.id}"><img loading="lazy" src="${esc(p.image||'https://via.placeholder.com/800x500?text=Product')}" alt="${esc(p.name)}" style="cursor:pointer${p.outOfStock?';filter:grayscale(.6);opacity:.7':''}"></a>
         <button class="qv-btn-wrap" onclick="openQuickView('${p.id}')" style="position:absolute;bottom:10px;right:10px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 11px;font-size:12px;font-weight:800;cursor:pointer;align-items:center;gap:6px;z-index:2"><i class="fa-solid fa-eye"></i> <span data-i18n="btn_quickview">Quick View</span></button>
       </div>
       <div class="body">
         <div class="cat">${esc(p.category||'Digital')}</div>
         <h3><a href="#product-${p.id}" style="color:inherit;cursor:pointer">${esc(p.name)}</a></h3>
-        ${(Array.isArray(p.plans)&&p.plans.length)?`<div class="price">From ${money(Math.min(...p.plans.map(pl=>pl.price)))}</div>
+        ${p.outOfStock?`<div class="price">${money(p.price)}</div><div class="cardbtns"><button class="buy" disabled style="width:100%;background:#9aa4ae">Currently Unavailable</button></div>`:
+        (Array.isArray(p.plans)&&p.plans.length)?`<div class="price">From ${money(Math.min(...p.plans.map(pl=>pl.price)))}</div>
         <div class="cardbtns"><button class="buy" style="width:100%" onclick="location.hash='#product-${p.id}'"><i class="fa-solid fa-layer-group"></i> Choose Plan</button></div>`
         :`<div class="price">${money(p.price)} ${p.oldPrice?`<span class="old">${money(p.oldPrice)}</span>`:''}</div>
         <div class="cardbtns">
@@ -879,6 +940,7 @@ window.heroSearch=()=>{
 };
 
 document.getElementById('year').textContent=new Date().getFullYear();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 updateCartCount();
 route();
 

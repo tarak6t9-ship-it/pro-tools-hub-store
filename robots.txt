@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://tarak6t9-ship-it.github.io/pro-tools-hub-store/sitemap.xml
